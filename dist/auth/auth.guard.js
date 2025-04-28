@@ -19,17 +19,18 @@ let AuthGuard = class AuthGuard {
     }
     canActivate(context) {
         let req = context.switchToHttp().getRequest();
-        let token = req.headers.authorization?.split(' ')?.[1];
+        let token = req.headers.authorization?.split(" ")?.[1];
         if (!token) {
-            throw new common_1.UnauthorizedException('Token not provided !');
+            throw new common_1.UnauthorizedException("Token not provided !");
         }
         try {
             let data = this.jwt.verify(token);
-            req['user'] = data;
+            req["user"] = data;
+            console.log("verifired guard true");
             return true;
         }
         catch (error) {
-            throw new common_1.UnauthorizedException('Token not valid !');
+            throw new common_1.UnauthorizedException("Token not valid !");
         }
     }
 };

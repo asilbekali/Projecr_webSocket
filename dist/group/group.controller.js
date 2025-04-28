@@ -12,64 +12,58 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatController = void 0;
-const chat_service_1 = require("./chat.service");
-const create_chat_dto_1 = require("./dto/create-chat.dto");
-const auth_guard_1 = require("../auth/auth.guard");
+exports.GroupController = void 0;
 const common_1 = require("@nestjs/common");
-const create_message_dto_copy_1 = require("./dto/create-message.dto copy");
-let ChatController = class ChatController {
-    chatService;
-    constructor(chatService) {
-        this.chatService = chatService;
+const group_service_1 = require("./group.service");
+const create_group_dto_1 = require("./dto/create-group.dto");
+const auth_guard_1 = require("../auth/auth.guard");
+const create_group_message_dto_1 = require("./dto/create-group-message.dto");
+let GroupController = class GroupController {
+    groupService;
+    constructor(groupService) {
+        this.groupService = groupService;
     }
-    create(createChatDto) {
-        return this.chatService.createChat(createChatDto);
+    create(createGroupDto, req) {
+        const creatorId = req.headers.authorization;
+        return this.groupService.create(createGroupDto, creatorId);
     }
-    findAll(req) {
+    findGroup(req) {
         const authHeader = req.headers.authorization;
-        return this.chatService.getChat(authHeader);
+        return this.groupService.getGr(authHeader);
     }
-    findAllMessage(req) {
+    sendMessage(groupId, createGroupMessageDto, req) {
         const authHeader = req.headers.authorization;
-        return this.chatService.getMessage(authHeader);
-    }
-    createMessage(data) {
-        return this.chatService.createMessage(data);
+        return this.groupService.messageGroup(groupId, authHeader, createGroupMessageDto);
     }
 };
-exports.ChatController = ChatController;
+exports.GroupController = GroupController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_chat_dto_1.CreateChatDto]),
+    __metadata("design:paramtypes", [create_group_dto_1.CreateGroupDto, Object]),
     __metadata("design:returntype", void 0)
-], ChatController.prototype, "create", null);
+], GroupController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], ChatController.prototype, "findAll", null);
+], GroupController.prototype, "findGroup", null);
 __decorate([
-    (0, common_1.Get)("/message"),
-    __param(0, (0, common_1.Request)()),
+    (0, common_1.Post)("/message-group"),
+    __param(0, (0, common_1.Param)("groupId")),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, create_group_message_dto_1.CreateGroupMessageDto, Object]),
     __metadata("design:returntype", void 0)
-], ChatController.prototype, "findAllMessage", null);
-__decorate([
-    (0, common_1.Post)("/message"),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_message_dto_copy_1.CreateMessageDto]),
-    __metadata("design:returntype", void 0)
-], ChatController.prototype, "createMessage", null);
-exports.ChatController = ChatController = __decorate([
+], GroupController.prototype, "sendMessage", null);
+exports.GroupController = GroupController = __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    (0, common_1.Controller)("chat"),
-    __metadata("design:paramtypes", [chat_service_1.ChatService])
-], ChatController);
-//# sourceMappingURL=chat.controller.js.map
+    (0, common_1.Controller)("group"),
+    __metadata("design:paramtypes", [group_service_1.GroupService])
+], GroupController);
+//# sourceMappingURL=group.controller.js.map

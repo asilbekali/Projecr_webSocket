@@ -11,18 +11,18 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const user_module_1 = require("./user/user.module");
-const user_guard_1 = require("./user/user.guard");
 const chat_module_1 = require("./chat/chat.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 const jwt_guard_service_1 = require("./jwt-guard/jwt-guard.service");
+const group_module_1 = require("./group/group.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.UserModule, user_module_1.UserModule, chat_module_1.ChatModule, prisma_module_1.PrismaModule],
+        imports: [user_module_1.UserModule, user_module_1.UserModule, chat_module_1.ChatModule, prisma_module_1.PrismaModule, group_module_1.GroupModule],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, user_guard_1.UserGuard, jwt_guard_service_1.JwtGuardService],
+        providers: [app_service_1.AppService, jwt_guard_service_1.JwtGuardService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

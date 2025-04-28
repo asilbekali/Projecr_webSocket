@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreateChatDto } from "./dto/create-chat.dto";
 import * as jwt from "jsonwebtoken";
 import { PrismaService } from "src/prisma/prisma.service";
+import { CreateMessageDto } from "./dto/create-message.dto copy";
 
 @Injectable()
 export class ChatService {
@@ -75,4 +76,49 @@ export class ChatService {
             throw new BadRequestException("Invalid token!");
         }
     }
+
+    async createMessage(data: CreateMessageDto) {
+        return this.prisma.message.create({ data });
+    }
+
+    async getMessage(authHeader: string) {
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            throw new BadRequestException("Invalid token format!");
+        }
+    
+        const token = authHeader.split(" ")[1];
+        try {
+            const payload = jwt.verify(token, this.secretKey) as {
+                id: string;
+                [key: string]: any;
+            };
+    
+            const userId = payload.id;
+            if (!userId) {
+                throw new BadRequestException("ID not found in token!");
+            }
+    
+            const messages = await this.prisma.message.findMany({
+                where: {
+                    OR: [
+                        { fromId: userId }, // Foydalanuvchi yuborgan xabarlar
+                        { toId: userId },   // Foydalanuvchi qabul qilgan xabarlar
+                    ],
+                },
+                include: {
+                    from: true,  // Xabarni yuborgan foydalanuvchi ma'lumotlari
+                    to: true,    // Xabarni qabul qilgan foydalanuvchi ma'lumotlari
+                    chat: true,  // Xabar tegishli chat ma'lumotlari
+                },
+            });
+    
+            return messages;
+        } catch (error) {
+            if (error.name === "TokenExpiredError") {
+                throw new BadRequestException("Token has expired!");
+            }
+            throw new BadRequestException("Invalid token!");
+        }
+    }
+    
 }

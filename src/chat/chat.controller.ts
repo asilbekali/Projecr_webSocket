@@ -14,6 +14,7 @@ import {
     Headers,
     Request,
 } from "@nestjs/common";
+import { CreateMessageDto } from "./dto/create-message.dto copy";
 
 @UseGuards(AuthGuard)
 @Controller("chat")
@@ -29,5 +30,17 @@ export class ChatController {
     findAll(@Request() req) {
         const authHeader = req.headers.authorization;
         return this.chatService.getChat(authHeader);
+    }
+
+
+    @Get("/message")
+    findAllMessage(@Request() req) {
+        const authHeader = req.headers.authorization;
+        return this.chatService.getMessage(authHeader);
+    }
+
+    @Post("/message")
+    createMessage(@Body() data: CreateMessageDto) {
+        return this.chatService.createMessage(data);
     }
 }

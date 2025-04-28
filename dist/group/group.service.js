@@ -9,42 +9,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatService = void 0;
+exports.GroupService = void 0;
 const common_1 = require("@nestjs/common");
-const jwt = require("jsonwebtoken");
 const prisma_service_1 = require("../prisma/prisma.service");
-let ChatService = class ChatService {
+const jwt = require("jsonwebtoken");
+let GroupService = class GroupService {
     prisma;
     secretKey = "film";
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async createChat(data) {
-        const bazaChat = await this.prisma.chat.findFirst({
-            where: { toId: data.toId },
-        });
-        if (bazaChat) {
-            throw new common_1.BadRequestException("Chat already exists !");
+    async create(data, authHeader) {
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            throw new common_1.BadRequestException("Invalid token format!");
         }
-        const chat = await this.prisma.chat.create({ data });
-        return chat;
-    }
-    async deleteChat(id) {
-        const bazaChat = await this.prisma.chat.findFirst({
-            where: { id },
-        });
-        if (!bazaChat) {
-            throw new common_1.BadRequestException("Chat does not exist!");
+        const token = authHeader.split(" ")[1];
+        const payload = jwt.verify(token, this.secretKey);
+        const userId = payload.id;
+        if (!userId) {
+            throw new common_1.BadRequestException("ID not found in token!");
         }
-        const deletedChat = await this.prisma.chat.delete({
-            where: { id },
+        return await this.prisma.group.create({
+            data: {
+                groupName: data.groupName,
+                creatorId: userId,
+            },
         });
-        return {
-            message: "Chat deleted successfully",
-            deletedChat,
-        };
     }
-    async getChat(authHeader) {
+    async getGr(authHeader) {
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             throw new common_1.BadRequestException("Invalid token format!");
         }
@@ -55,16 +47,12 @@ let ChatService = class ChatService {
             if (!userId) {
                 throw new common_1.BadRequestException("ID not found in token!");
             }
-            let chat = await this.prisma.chat.findMany({
+            const groups = await this.prisma.group.findMany({
                 where: {
-                    OR: [{ fromId: userId }, { toId: userId }],
-                },
-                include: {
-                    from: true,
-                    to: true,
+                    OR: [{ creatorId: userId }, { groupName: userId }],
                 },
             });
-            return chat;
+            return groups;
         }
         catch (error) {
             if (error.name === "TokenExpiredError") {
@@ -73,10 +61,7 @@ let ChatService = class ChatService {
             throw new common_1.BadRequestException("Invalid token!");
         }
     }
-    async createMessage(data) {
-        return this.prisma.message.create({ data });
-    }
-    async getMessage(authHeader) {
+    async messageGroup(authHeader, groupId, messageData) {
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             throw new common_1.BadRequestException("Invalid token format!");
         }
@@ -87,20 +72,20 @@ let ChatService = class ChatService {
             if (!userId) {
                 throw new common_1.BadRequestException("ID not found in token!");
             }
-            const messages = await this.prisma.message.findMany({
-                where: {
-                    OR: [
-                        { fromId: userId },
-                        { toId: userId },
-                    ],
-                },
-                include: {
-                    from: true,
-                    to: true,
-                    chat: true,
+            const group = await this.prisma.group.findUnique({
+                where: { id: groupId },
+            });
+            if (!group) {
+                throw new common_1.BadRequestException("Group not found!");
+            }
+            const groupMessage = await this.prisma.groupMessage.create({
+                data: {
+                    fromId: userId,
+                    groupId: groupId,
+                    text: messageData.text,
                 },
             });
-            return messages;
+            return groupMessage;
         }
         catch (error) {
             if (error.name === "TokenExpiredError") {
@@ -110,9 +95,9 @@ let ChatService = class ChatService {
         }
     }
 };
-exports.ChatService = ChatService;
-exports.ChatService = ChatService = __decorate([
+exports.GroupService = GroupService;
+exports.GroupService = GroupService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], ChatService);
-//# sourceMappingURL=chat.service.js.map
+], GroupService);
+//# sourceMappingURL=group.service.js.map
