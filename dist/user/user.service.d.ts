@@ -1,7 +1,7 @@
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { PrismaService } from "src/prisma/prisma.service";
+import { JwtService } from "@nestjs/jwt";
 export declare class UserService {
     private prisma;
     private jwt;
@@ -11,17 +11,23 @@ export declare class UserService {
         password: string;
         role: import(".prisma/client").$Enums.RoleUsers;
         id: string;
+        createdAt: Date;
     } | null>;
     register(data: CreateUserDto): Promise<{
         name: string;
         password: string;
         role: import(".prisma/client").$Enums.RoleUsers;
         id: string;
+        createdAt: Date;
     }>;
     login(data: UpdateUserDto): Promise<{
         token: string;
     }>;
     getUserData(): Promise<{
-        message: string;
-    }>;
+        name: string;
+        password: string;
+        role: import(".prisma/client").$Enums.RoleUsers;
+        id: string;
+        createdAt: Date;
+    }[]>;
 }

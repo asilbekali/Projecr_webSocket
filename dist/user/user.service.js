@@ -30,7 +30,7 @@ let UserService = class UserService {
     async register(data) {
         const existingUser = await this.findUser(data.name);
         if (existingUser) {
-            throw new common_1.BadRequestException('User already exists!');
+            throw new common_1.BadRequestException("User already exists!");
         }
         const hashedPassword = bcrypt.hashSync(data.password, 10);
         const userRole = data.role.toUpperCase();
@@ -38,22 +38,22 @@ let UserService = class UserService {
             data: {
                 name: data.name,
                 password: hashedPassword,
-                role: userRole
+                role: userRole,
             },
         });
         return newUser;
     }
     async login(data) {
         if (!data.name || !data.password) {
-            throw new common_1.BadRequestException('Name and password are required for login!');
+            throw new common_1.BadRequestException("Name and password are required for login!");
         }
         const user = await this.findUser(data.name);
         if (!user) {
-            throw new common_1.BadRequestException('User not found');
+            throw new common_1.BadRequestException("User not found");
         }
         const isPasswordValid = bcrypt.compareSync(data.password, user.password);
         if (!isPasswordValid) {
-            throw new common_1.BadRequestException('Invalid password!');
+            throw new common_1.BadRequestException("Invalid password!");
         }
         const token = this.jwt.sign({
             id: user.id,
@@ -62,12 +62,14 @@ let UserService = class UserService {
         return { token };
     }
     async getUserData() {
-        return { message: 'User data retrieved successfully!' };
+        console.log("keldi");
+        return await this.prisma.user.findMany();
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        jwt_1.JwtService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

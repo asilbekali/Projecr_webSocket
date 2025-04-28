@@ -9,11 +9,16 @@ export declare class UserController {
         password: string;
         role: import(".prisma/client").$Enums.RoleUsers;
         id: string;
+        createdAt: Date;
     }>;
     login(data: UpdateUserDto): Promise<{
         token: string;
     }>;
     meUser(): Promise<{
-        message: string;
-    }>;
+        name: string;
+        password: string;
+        role: import(".prisma/client").$Enums.RoleUsers;
+        id: string;
+        createdAt: Date;
+    }[]>;
 }

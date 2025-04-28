@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,21 +7,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id       String  @id @default(uuid())
-  name     String  @unique
-  password String
-  role     RoleUsers @default(USER)
-  chatsFrom Chat[] @relation("FromUser")
-  chatsTo   Chat[] @relation("ToUser")
+model User {
+  id               String         @id @default(uuid())
+  name             String         @unique
+  password         String
+  role             RoleUsers      @default(USER)
+  chatsFrom        Chat[]         @relation("FromUser")
+  chatsTo          Chat[]         @relation("ToUser")
+  messagesSent     Message[]      @relation("FromUserMessages")
+  messagesReceived Message[]      @relation("ToUserMessages")
+  groups           Group[]        @relation("GroupUsers")
+  groupMessages    GroupMessage[]
+  createdAt        DateTime       @default(now())
 }
 
 model Chat {
-  id     String @id @default(uuid())
-  from   user   @relation("FromUser", fields: [fromId], references: [id])
-  fromId String
-  to     user   @relation("ToUser", fields: [toId], references: [id])
-  toId String
+  id        String    @id @default(uuid())
+  from      User      @relation("FromUser", fields: [fromId], references: [id])
+  fromId    String
+  to        User      @relation("ToUser", fields: [toId], references: [id])
+  toId      String
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  from      User     @relation("FromUserMessages", fields: [fromId], references: [id])
+  fromId    String
+  to        User     @relation("ToUserMessages", fields: [toId], references: [id])
+  toId      String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model Group {
+  id            String         @id @default(uuid())
+  name          String
+  users         User[]         @relation("GroupUsers")
+  groupMessages GroupMessage[]
+  createdAt     DateTime       @default(now())
+}
+
+model GroupMessage {
+  id        String   @id @default(uuid())
+  from      User     @relation(fields: [fromId], references: [id])
+  fromId    String
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   String
+  text      String
+  createdAt DateTime @default(now())
 }
 
 enum RoleUsers {
