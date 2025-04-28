@@ -61,6 +61,10 @@ export class ChatService {
                 where: {
                     OR: [{ fromId: userId }, { toId: userId }],
                 },
+                include: {
+                    from: true,
+                    to: true,
+                },
             });
 
             return chat;

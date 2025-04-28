@@ -5,14 +5,29 @@ export declare class ChatController {
     constructor(chatService: ChatService);
     create(createChatDto: CreateChatDto): Promise<{
         id: string;
+        createdAt: Date;
         fromId: string;
         toId: string;
-        createdAt: Date;
     }>;
-    findAll(req: any): Promise<{
+    findAll(req: any): Promise<({
+        from: {
+            name: string;
+            password: string;
+            role: import(".prisma/client").$Enums.RoleUsers;
+            id: string;
+            createdAt: Date;
+        };
+        to: {
+            name: string;
+            password: string;
+            role: import(".prisma/client").$Enums.RoleUsers;
+            id: string;
+            createdAt: Date;
+        };
+    } & {
         id: string;
+        createdAt: Date;
         fromId: string;
         toId: string;
-        createdAt: Date;
-    }[]>;
+    })[]>;
 }

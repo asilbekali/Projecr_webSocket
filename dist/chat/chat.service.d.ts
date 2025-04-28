@@ -6,23 +6,38 @@ export declare class ChatService {
     constructor(prisma: PrismaService);
     createChat(data: CreateChatDto): Promise<{
         id: string;
+        createdAt: Date;
         fromId: string;
         toId: string;
-        createdAt: Date;
     }>;
     deleteChat(id: string): Promise<{
         message: string;
         deletedChat: {
             id: string;
+            createdAt: Date;
             fromId: string;
             toId: string;
-            createdAt: Date;
         };
     }>;
-    getChat(authHeader: string): Promise<{
+    getChat(authHeader: string): Promise<({
+        from: {
+            name: string;
+            password: string;
+            role: import(".prisma/client").$Enums.RoleUsers;
+            id: string;
+            createdAt: Date;
+        };
+        to: {
+            name: string;
+            password: string;
+            role: import(".prisma/client").$Enums.RoleUsers;
+            id: string;
+            createdAt: Date;
+        };
+    } & {
         id: string;
+        createdAt: Date;
         fromId: string;
         toId: string;
-        createdAt: Date;
-    }[]>;
+    })[]>;
 }
