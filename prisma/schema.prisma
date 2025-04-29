@@ -14,9 +14,10 @@ model User {
   role     RoleUsers @default(USER)
 }
 
-model test {
-  id   Int    @id
-  name String
+model product {
+  id    String @id @default(uuid())
+  name  String
+  price Int
 }
 
 enum RoleUsers {
