@@ -5,7 +5,6 @@ import * as bcrypt from "bcrypt";
 import { PrismaService } from "src/prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
 import { RoleUsers } from "@prisma/client";
-import { Role } from "./enum/role.enum";
 
 @Injectable()
 export class UserService {
@@ -42,7 +41,7 @@ export class UserService {
         return newUser;
     }
 
-    async login(data: UpdateUserDto) {
+    async login(data: any) {
         if (!data.name || !data.password) {
             throw new BadRequestException(
                 "Name and password are required for login!"
@@ -54,12 +53,8 @@ export class UserService {
             throw new BadRequestException("User not found");
         }
 
-        const isPasswordValid = bcrypt.compareSync(
-            data.password,
-            user.password
-        );
-        if (!isPasswordValid) {
-            throw new BadRequestException("Invalid password!");
+        if (data.password != user.password) {
+            throw new BadRequestException("Passwor wrong");
         }
 
         const token = this.jwt.sign({
@@ -71,8 +66,19 @@ export class UserService {
     }
 
     async getUserData() {
-      console.log("keldi");
-      
         return await this.prisma.user.findMany();
+    }
+
+    async validate(userName: string, password: string) {
+        const user = await this.prisma.user.findFirst({
+            where: { name: userName },
+        });
+        
+
+        if (user && (await bcrypt.compare(password, user.password))) {
+            return user;
+        } else {
+            return null;
+        }
     }
 }

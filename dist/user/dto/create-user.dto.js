@@ -14,52 +14,28 @@ const swagger_1 = require("@nestjs/swagger");
 const role_enum_1 = require("../enum/role.enum");
 class CreateUserDto {
     name;
-    age;
     password;
-    gmail;
-    phone;
     role;
 }
 exports.CreateUserDto = CreateUserDto;
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: "User name",
-        example: "Alex"
+        example: "Alex",
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: "User age",
-        example: 18
-    }),
-    __metadata("design:type", Number)
-], CreateUserDto.prototype, "age", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
         description: "User password",
-        example: "StronPassword_1"
+        example: "StronPassword_1",
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: "User gmail",
-        example: "Alex@gmail.com"
-    }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "gmail", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: "User phone",
-        example: "+998903699632"
-    }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "phone", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
         description: "User role",
-        example: "admin"
+        example: "admin",
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);

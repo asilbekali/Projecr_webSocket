@@ -8,60 +8,15 @@ datasource db {
 }
 
 model User {
-  id               String         @id @default(uuid())
-  name             String         @unique
-  password         String
-  role             RoleUsers      @default(USER)
-  chatsFrom        Chat[]         @relation("FromUser")
-  chatsTo          Chat[]         @relation("ToUser")
-  messagesSent     Message[]      @relation("FromUserMessages")
-  messagesReceived Message[]      @relation("ToUserMessages")
-  groupsCreated    Group[]        @relation("GroupCreator")
-  groupsJoined     Group[]        @relation("GroupUsers")
-  groupMessages    GroupMessage[] @relation("UserGroupMessages")
-  createdAt        DateTime       @default(now())
+  id       String    @id @default(uuid())
+  name     String    @unique
+  password String
+  role     RoleUsers @default(USER)
 }
 
-model Chat {
-  id        String    @id @default(uuid())
-  from      User      @relation("FromUser", fields: [fromId], references: [id])
-  fromId    String
-  to        User      @relation("ToUser", fields: [toId], references: [id])
-  toId      String
-  messages  Message[] @relation("ChatMessages")
-  createdAt DateTime  @default(now())
-}
-
-model Message {
-  id        String   @id @default(uuid())
-  from      User     @relation("FromUserMessages", fields: [fromId], references: [id])
-  fromId    String
-  to        User     @relation("ToUserMessages", fields: [toId], references: [id])
-  toId      String
-  chat      Chat     @relation("ChatMessages", fields: [chatId], references: [id])
-  chatId    String
-  text      String
-  createdAt DateTime @default(now())
-}
-
-model Group {
-  id            String         @id @default(uuid())
-  groupName     String
-  creator       User           @relation("GroupCreator", fields: [creatorId], references: [id])
-  creatorId     String
-  users         User[]         @relation("GroupUsers")
-  groupMessages GroupMessage[] @relation("GroupMessages")
-  createdAt     DateTime       @default(now())
-}
-
-model GroupMessage {
-  id        String   @id @default(uuid())
-  from      User     @relation("UserGroupMessages", fields: [fromId], references: [id])
-  fromId    String
-  group     Group    @relation("GroupMessages", fields: [groupId], references: [id])
-  groupId   String
-  text      String
-  createdAt DateTime @default(now())
+model test {
+  id   Int    @id
+  name String
 }
 
 enum RoleUsers {

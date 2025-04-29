@@ -12,6 +12,9 @@ const jwt_1 = require("@nestjs/jwt");
 const user_controller_1 = require("./user.controller");
 const user_service_1 = require("./user.service");
 const prisma_service_1 = require("../prisma/prisma.service");
+const local_strategies_1 = require("./strategies/local.strategies");
+const passport_1 = require("@nestjs/passport");
+const jwt_strategy_1 = require("./strategies/jwt.strategy");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
@@ -22,9 +25,10 @@ exports.UserModule = UserModule = __decorate([
                 secret: "film",
                 global: true,
             }),
+            passport_1.PassportModule,
         ],
         controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService, prisma_service_1.PrismaService],
+        providers: [user_service_1.UserService, prisma_service_1.PrismaService, local_strategies_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

@@ -51,9 +51,8 @@ let UserService = class UserService {
         if (!user) {
             throw new common_1.BadRequestException("User not found");
         }
-        const isPasswordValid = bcrypt.compareSync(data.password, user.password);
-        if (!isPasswordValid) {
-            throw new common_1.BadRequestException("Invalid password!");
+        if (data.password != user.password) {
+            throw new common_1.BadRequestException("Passwor wrong");
         }
         const token = this.jwt.sign({
             id: user.id,
@@ -62,8 +61,18 @@ let UserService = class UserService {
         return { token };
     }
     async getUserData() {
-        console.log("keldi");
         return await this.prisma.user.findMany();
+    }
+    async validate(userName, password) {
+        const user = await this.prisma.user.findFirst({
+            where: { name: userName },
+        });
+        if (user && (await bcrypt.compare(password, user.password))) {
+            return user;
+        }
+        else {
+            return null;
+        }
     }
 };
 exports.UserService = UserService;

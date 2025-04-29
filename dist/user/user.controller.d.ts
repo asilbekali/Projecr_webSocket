@@ -1,6 +1,5 @@
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserService } from "./user.service";
+import { CreateUserDto } from "./dto/create-user.dto";
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
@@ -9,9 +8,8 @@ export declare class UserController {
         password: string;
         role: import(".prisma/client").$Enums.RoleUsers;
         id: string;
-        createdAt: Date;
     }>;
-    login(data: UpdateUserDto): Promise<{
+    login(data: Request): Promise<{
         token: string;
     }>;
     meUser(): Promise<{
@@ -19,6 +17,5 @@ export declare class UserController {
         password: string;
         role: import(".prisma/client").$Enums.RoleUsers;
         id: string;
-        createdAt: Date;
     }[]>;
 }
